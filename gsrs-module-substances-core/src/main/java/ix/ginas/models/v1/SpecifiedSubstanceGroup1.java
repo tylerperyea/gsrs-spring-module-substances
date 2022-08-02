@@ -7,6 +7,7 @@ import ix.ginas.models.GinasCommonSubData;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name="ix_ginas_ssg1")
@@ -15,7 +16,7 @@ public class SpecifiedSubstanceGroup1 extends GinasCommonSubData {
     @JoinTable(name="ix_ginas_substance_ss_comp", inverseJoinColumns = {
             @JoinColumn(name="ix_ginas_component_uuid")
     })
-	public List<SpecifiedSubstanceComponent> constituents;
+	public Set<SpecifiedSubstanceComponent> constituents;
 	
 //	@OneToOne(cascade=CascadeType.ALL)
 //	public SubstanceReference parentSubstance;

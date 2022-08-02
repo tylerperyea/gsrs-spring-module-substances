@@ -1,17 +1,28 @@
 package ix.core.models;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import gsrs.model.GsrsApiAction;
 import ix.core.ObjectResourceReference;
 import ix.core.util.EntityUtils;
 import ix.core.util.EntityUtils.EntityInfo;
 import ix.core.util.EntityUtils.EntityWrapper;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name="ix_core_xref",indexes = {@Index(name = "xref_refid_index", columnList = "refid"),
@@ -38,7 +49,7 @@ public class XRef extends IxModel {
     @JoinTable(name="ix_core_xref_property", inverseJoinColumns = {
             @JoinColumn(name="ix_core_value_id")
     })
-    public List<Value> properties = new ArrayList<Value>();
+    public Set<Value> properties = new HashSet<Value>();
 
     public XRef() {
     }

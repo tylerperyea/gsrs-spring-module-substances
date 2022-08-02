@@ -50,8 +50,10 @@ public class ProcessingJob extends LongBaseModel {
 
 
     @ManyToMany(cascade=CascadeType.ALL)
-    @JoinTable(name="ix_core_procjob_key")
-    public List<Keyword> keys = new ArrayList<Keyword>();
+    @JoinTable(name="ix_core_procjob_key", inverseJoinColumns = {
+            @JoinColumn(name="ix_core_value_id")
+    })
+    public Set<Keyword> keys = new HashSet<Keyword>();
 
     @Transient
     @JsonIgnore

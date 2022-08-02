@@ -318,7 +318,7 @@ public class Substance extends GinasCommonData implements ValidationMessageHolde
     @JoinTable(name="ix_ginas_substance_tags", inverseJoinColumns = {
             @JoinColumn(name="ix_core_value_id")
     })
-    public List<Keyword> tags = new ArrayList<Keyword>();
+    public Set<Keyword> tags = new HashSet<Keyword>();
 
     public void addTag(Keyword tag){
         for(Keyword k:tags){

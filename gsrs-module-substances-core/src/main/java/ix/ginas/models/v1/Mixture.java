@@ -1,12 +1,22 @@
 package ix.ginas.models.v1;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import ix.ginas.models.GinasAccessReferenceControlled;
 import ix.ginas.models.GinasCommonSubData;
-
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name="ix_ginas_mixture")
@@ -16,7 +26,7 @@ public class Mixture extends GinasCommonSubData {
     @JoinTable(name="ix_ginas_substance_mix_comp", inverseJoinColumns = {
             @JoinColumn(name="ix_ginas_component_uuid")
     })
-	public List<Component> components = new ArrayList<>();
+	public Set<Component> components = new HashSet<>();
 	
 	@OneToOne(cascade= CascadeType.ALL)
 	public SubstanceReference parentSubstance;
@@ -31,11 +41,11 @@ public class Mixture extends GinasCommonSubData {
 
 	@JsonIgnore
 	public List<Component> getMixture() {
-		return components;
+		return new ArrayList<>(components);
 	}
 
 	public void setMixture(List<Component> mixture) {
-		this.components = mixture;
+		this.components = new HashSet<>(mixture);
 	}
 	
 	public int size(){

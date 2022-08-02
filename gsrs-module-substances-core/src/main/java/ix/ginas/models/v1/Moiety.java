@@ -35,6 +35,7 @@ public class Moiety extends NoIdGinasCommonSubData implements Comparable<Moiety>
 	 * The UUID of this moiety
 	 */
 
+	@Id
 	@Type(type = "uuid-char" )
 	@Column(length =40, updatable = false, unique = true)
 	public UUID uuid;
@@ -73,7 +74,7 @@ public class Moiety extends NoIdGinasCommonSubData implements Comparable<Moiety>
 	 */
 	@Column(unique=true)
     @JsonIgnore
-	@Id
+//	@Id
     public String innerUuid;
 
     @PrePersist

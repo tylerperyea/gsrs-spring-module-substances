@@ -1,12 +1,58 @@
 package ix.core.models;
 
-import com.fasterxml.jackson.annotation.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import gov.nih.ncats.common.util.TimeUtil;
 import gov.nih.ncats.molwitch.Chemical;
 import gov.nih.ncats.molwitch.inchi.Inchi;
@@ -15,21 +61,9 @@ import ix.core.AbstractValueDeserializer;
 import ix.core.EntityMapperOptions;
 import ix.core.chem.Chem;
 import ix.core.chem.ChemCleaner;
-import ix.core.util.EntityUtils.EntityWrapper;
 import ix.core.validator.GinasProcessingMessage;
 import ix.ginas.models.converters.StereoConverter;
-import ix.utils.Util;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import javax.persistence.*;
-import java.io.IOException;
-import java.util.*;
 
 //@MappedSuperclass
 @Entity
@@ -214,7 +248,7 @@ public class Structure extends BaseModel {
         if(other !=null) {
             this.properties.clear();
 
-            this.properties = new ArrayList(other.properties); //add properties
+            this.properties = new HashSet<Value>(other.properties); //add properties
             this.ezCenters = other.ezCenters;
             this.definedStereo = other.definedStereo;
             this.charge = other.charge;
@@ -277,7 +311,7 @@ public class Structure extends BaseModel {
     @JoinTable(name="ix_core_structure_property", inverseJoinColumns = {
             @JoinColumn(name="ix_core_value_id")
     })
-    public List<Value> properties = new ArrayList<Value>();
+    public Set<Value> properties = new HashSet<Value>();
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JsonView(BeanViews.JsonDiff.class)
@@ -285,7 +319,7 @@ public class Structure extends BaseModel {
     @JoinTable(name="ix_core_structure_link", inverseJoinColumns = {
             @JoinColumn(name="ix_core_xref_id")
     })
-    public List<XRef> links = new ArrayList<XRef>();
+    public Set<XRef> links = new HashSet<XRef>();
 
     @Transient
     private static ObjectMapper mapper = new ObjectMapper();

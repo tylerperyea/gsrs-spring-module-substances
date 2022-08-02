@@ -47,7 +47,7 @@ public class NucleicAcid extends GinasCommonSubData {
     @JoinTable(name="ix_ginas_nucleicacid_subunits", inverseJoinColumns = {
             @JoinColumn(name="ix_ginas_subunit_uuid")
     })
-	public List<Subunit> subunits = new ArrayList<>();
+	public Set<Subunit> subunits = new HashSet<>();
 	
 	@JSONEntity(title = "Sugars", isRequired = true)
 	@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
@@ -128,7 +128,8 @@ public class NucleicAcid extends GinasCommonSubData {
 	
 	@Indexable
 	public List<Subunit> getSubunits() {
-		Collections.sort(subunits, new Comparator<Subunit>() {
+		List<Subunit> resultList = new ArrayList<>(subunits);
+		Collections.sort(resultList, new Comparator<Subunit>() {
 			@Override
 			public int compare(Subunit o1, Subunit o2) {
 				if(o1.subunitIndex ==null){
@@ -143,11 +144,11 @@ public class NucleicAcid extends GinasCommonSubData {
 			}
 		});
 		adoptChildSubunits();
-		return this.subunits;
+		return resultList;
 	}
 
 	public void setSubunits(List<Subunit> subunits) {
-		this.subunits = subunits;
+		this.subunits = new HashSet<Subunit>(subunits);
 		adoptChildSubunits();
 	}
 
@@ -227,7 +228,7 @@ public class NucleicAcid extends GinasCommonSubData {
 	@PreUpdate
 	@PrePersist
 	public void adoptChildSubunits(){
-		List<Subunit> subunits=this.subunits;
+		Set<Subunit> subunits=this.subunits;
 		for(Subunit s: subunits){
 			s.setParent(this);
 		}

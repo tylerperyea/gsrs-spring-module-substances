@@ -1,11 +1,25 @@
 package ix.core.models;
 
-import com.fasterxml.jackson.annotation.JsonView;
-
-import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Version;
+
+import com.fasterxml.jackson.annotation.JsonView;
 
 @Entity
 @Table(name="ix_core_procrec")
@@ -25,8 +39,10 @@ public class ProcessingRecord extends LongBaseModel {
     public String name;
     
     @ManyToMany
-    @JoinTable(name="ix_core_procrec_prop")
-    public List<Value> properties = new ArrayList<Value>();
+    @JoinTable(name="ix_core_procrec_prop", inverseJoinColumns = {
+            @JoinColumn(name="ix_core_value_id")
+    })    
+    public Set<Value> properties = new HashSet<Value>();
     
     
     @Version
